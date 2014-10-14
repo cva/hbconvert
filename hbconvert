@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.2
 
 import argparse
+import os
 import os.path
 import subprocess
 
@@ -14,6 +15,10 @@ class HandbrakeConverter:
   def replace_ext(self, filename, ext='mp4'):
     base = os.path.splitext(filename)[0]
     return '{}.{}'.format(base, ext)
+
+  def cleanup(self, path):
+    if os.path.exists(path):
+      os.remove(path)
 
   def convert(self, input, overwrite=False):
     output = self.replace_ext(os.path.basename(input))
@@ -30,7 +35,15 @@ class HandbrakeConverter:
       '--out', output,
     )
 
-    subprocess.call(args)
+    try:
+      subprocess.check_call(args)
+    except subprocess.CalledProcessError as err:
+      print('Error during conversion: {}'.format(err.returncode))
+      self.cleanup(output)
+    except KeyboardInterrupt:
+      print('Cancelled conversion')
+      self.cleanup(output)
+      raise
 
 
 def main():
