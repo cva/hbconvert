@@ -1,0 +1,55 @@
+#!/usr/bin/env python3.2
+
+import argparse
+import os.path
+import subprocess
+
+
+class HandbrakeConverter:
+  def __init__(self, hbpath, hbpreset, out):
+    self.__hbpath = hbpath
+    self.__hbpreset = hbpreset
+    self.__out = out
+
+  def replace_ext(self, filename, ext='mp4'):
+    base = os.path.splitext(filename)[0]
+    return '{}.{}'.format(base, ext)
+
+  def convert(self, input, overwrite=False):
+    output = self.replace_ext(os.path.basename(input))
+    output = os.path.join(self.__out, output)
+
+    if not overwrite and os.path.exists(output):
+      print('{} already exists, skipping.'.format(output))
+      return
+
+    args = (
+      self.__hbpath,
+      '--preset', self.__hbpreset,
+      '--input', input,
+      '--out', output,
+    )
+
+    subprocess.call(args)
+
+
+def main():
+  parser = argparse.ArgumentParser(description='Convert video files to .mp4')
+  parser.add_argument('--preset', default='Regular',
+                      help='HandBrakeCLI preset to use')
+  parser.add_argument('--hbpath', default='HandBrakeCLI',
+                      help='Path to HandBrakeCLI')
+  parser.add_argument('--out', default='',
+                      help='Destination for converted files')
+  parser.add_argument('files', nargs='+', help='files to convert')
+
+  args = parser.parse_args()
+
+  converter = HandbrakeConverter(hbpath=args.hbpath, hbpreset=args.preset,
+                                 out=args.out)
+  for input in args.files:
+    converter.convert(input)
+    # path exist?
+
+if __name__ == '__main__':
+  main()
