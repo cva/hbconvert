@@ -12,20 +12,21 @@ class HandbrakeConverter:
     self.__hbpreset = hbpreset
     self.__out = out
 
-  def replace_ext(self, filename, ext='mp4'):
+  def __replace_ext(self, filename, ext='mp4'):
     base = os.path.splitext(filename)[0]
     return '{}.{}'.format(base, ext)
 
-  def cleanup(self, path):
+  def __cleanup(self, path):
     if os.path.exists(path):
+      print('>>> Removing {}'.format(path))
       os.remove(path)
 
   def convert(self, input, overwrite=False):
-    output = self.replace_ext(os.path.basename(input))
+    output = self.__replace_ext(os.path.basename(input))
     output = os.path.join(self.__out, output)
 
     if not overwrite and os.path.exists(output):
-      print('{} already exists, skipping.'.format(output))
+      print('>>> {} already exists, skipping.'.format(output))
       return
 
     args = (
@@ -38,11 +39,11 @@ class HandbrakeConverter:
     try:
       subprocess.check_call(args)
     except subprocess.CalledProcessError as err:
-      print('Error during conversion: {}'.format(err.returncode))
-      self.cleanup(output)
+      print('>>> Error during conversion: {}'.format(err.returncode))
+      self.__cleanup(output)
     except KeyboardInterrupt:
-      print('Cancelled conversion')
-      self.cleanup(output)
+      print('>>> Cancelled conversion')
+      self.__cleanup(output)
       raise
 
 
@@ -60,9 +61,10 @@ def main():
 
   converter = HandbrakeConverter(hbpath=args.hbpath, hbpreset=args.preset,
                                  out=args.out)
-  for input in args.files:
-    converter.convert(input)
-    # path exist?
+  for infile in args.files:
+    print('>>> Converting {}'.format(infile))
+    converter.convert(infile)
+
 
 if __name__ == '__main__':
   main()
