@@ -21,8 +21,8 @@ class HandbrakeConverter:
       print('>>> Removing {}'.format(path))
       os.remove(path)
 
-  def convert(self, input, overwrite=False):
-    output = self.__replace_ext(os.path.basename(input))
+  def convert(self, infile, overwrite=False):
+    output = self.__replace_ext(os.path.basename(infile))
     output = os.path.join(self.__out, output)
 
     if not overwrite and os.path.exists(output):
@@ -32,7 +32,7 @@ class HandbrakeConverter:
     args = (
       self.__hbpath,
       '--preset', self.__hbpreset,
-      '--input', input,
+      '--input', infile,
       '--out', output,
     )
 
