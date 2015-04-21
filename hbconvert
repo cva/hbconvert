@@ -10,6 +10,7 @@ class HandbrakeConverter:
   def __init__(self, hbpath, hbpreset, out):
     self.__hbpath = hbpath
     self.__hbpreset = hbpreset
+    self.__hbbandwidth = '5500'
     self.__out = out
 
   def __replace_ext(self, filename, ext='mp4'):
@@ -32,6 +33,7 @@ class HandbrakeConverter:
     args = (
       self.__hbpath,
       '--preset', self.__hbpreset,
+      '-b', self.__hbbandwidth, 
       '--input', infile,
       '--out', output,
     )
@@ -49,7 +51,7 @@ class HandbrakeConverter:
 
 def main():
   parser = argparse.ArgumentParser(description='Convert video files to .mp4')
-  parser.add_argument('--preset', default='Regular',
+  parser.add_argument('--preset', default='Normal',
                       help='HandBrakeCLI preset to use')
   parser.add_argument('--hbpath', default='HandBrakeCLI',
                       help='Path to HandBrakeCLI')
