@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.2
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -10,7 +10,6 @@ class HandbrakeConverter:
   def __init__(self, hbpath, hbpreset, out):
     self.__hbpath = hbpath
     self.__hbpreset = hbpreset
-    self.__hbbandwidth = '5500'
     self.__out = out
 
   def __replace_ext(self, filename, ext='mp4'):
@@ -33,7 +32,6 @@ class HandbrakeConverter:
     args = (
       self.__hbpath,
       '--preset', self.__hbpreset,
-      '-b', self.__hbbandwidth, 
       '--input', infile,
       '--out', output,
     )
